@@ -1,0 +1,6 @@
+{
+  "name": "Developer Portfolio",
+  "description": "A beautiful, minimalist, dark-themed responsive developer portfolio website.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
