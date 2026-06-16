@@ -244,11 +244,10 @@ img {
 
 /* Image Container (Right side on desktop, absolute bottom on mobile) */
 .hero-image-container {
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  position: relative;
   width: 100%;
   height: 65vh;
+  flex-grow: 1;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
@@ -258,6 +257,9 @@ img {
 
 @media (min-width: 1024px) {
   .hero-image-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
     height: 100%;
     width: 50%;
   }

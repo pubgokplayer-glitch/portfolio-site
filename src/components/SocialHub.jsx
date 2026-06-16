@@ -1,7 +1,5 @@
 const links = [
-  { name: "Instagram", url: "https://www.instagram.com/awaischohan" },
-  { name: "YouTube", url: "https://www.youtube.com/@awaischohan" },
-  { name: "TikTok", url: "https://www.tiktok.com/@awaischohan" },
+  { name: "Instagram", url: "https://www.instagram.com/unqualified_adult/" },
 ];
 
 export default function SocialHub() {

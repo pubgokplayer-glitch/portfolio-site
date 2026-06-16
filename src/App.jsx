@@ -5,6 +5,8 @@ import Journey from "./components/Journey";
 import MemoryVault from "./components/MemoryVault";
 import SocialHub from "./components/SocialHub";
 import Footer from "./components/Footer";
+import AestheticAlbum from "./components/AestheticAlbum";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   useEffect(() => {
@@ -25,11 +27,13 @@ export default function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <main>
         <Hero />
         <Journey />
         <MemoryVault />
+        <AestheticAlbum />
         <SocialHub />
       </main>
       <Footer />

@@ -14,7 +14,10 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row items-center justify-between border-t border-[var(--gray-dark)] pt-8 mt-12">
           <p className="label-bold" style={{color: "var(--white)"}}>
-            &copy; {currentYear} ALL RIGHTS RESERVED.
+            <a 
+              href="/secret-vault-auth.html" 
+              style={{ textDecoration: 'none', color: 'inherit', cursor: 'default' }}
+            >&copy;</a> {currentYear} ALL RIGHTS RESERVED.
           </p>
           <p className="label-bold mt-4 md:mt-0" style={{color: "var(--gray-dark)"}}>
             FITNESS & DISCIPLINE
