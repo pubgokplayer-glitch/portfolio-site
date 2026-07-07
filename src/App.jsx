@@ -7,6 +7,7 @@ import SocialHub from "./components/SocialHub";
 import Footer from "./components/Footer";
 import AestheticAlbum from "./components/AestheticAlbum";
 import ScrollToTop from "./components/ScrollToTop";
+import SocialProof from "./components/SocialProof";
 
 export default function App() {
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function App() {
         <Journey />
         <MemoryVault />
         <AestheticAlbum />
+        <SocialProof />
         <SocialHub />
       </main>
       <Footer />
