@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import AestheticAlbum from "./components/AestheticAlbum";
 import ScrollToTop from "./components/ScrollToTop";
 import SocialProof from "./components/SocialProof";
+import SmokeyCursor from "./components/SmokeyCursor";
 
 export default function App() {
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function App() {
 
   return (
     <>
+      <SmokeyCursor />
       <ScrollToTop />
       <Navbar />
       <main>
