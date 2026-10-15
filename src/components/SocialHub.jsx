@@ -1,3 +1,5 @@
+import Magnetic from "./Magnetic";
+
 const links = [
   { name: "Instagram", url: "https://www.instagram.com/unqualified_adult/" },
 ];
@@ -22,9 +24,13 @@ export default function SocialHub() {
               className="social-list-item"
             >
               <span className="social-list-name">{link.name}</span>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
+              <Magnetic strength={0.45} proximity={95} maxOffset={20}>
+                <span className="social-arrow-magnetic" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </span>
+              </Magnetic>
             </a>
           ))}
         </div>

@@ -1,3 +1,5 @@
+import TiltCard from "./TiltCard";
+
 const portfolioImages = [
   { src: "/images/gym-workout.jpg", title: "Iron Therapy" },
   { src: "/images/healthy-meal.jpg", title: "Fuel" },
@@ -19,12 +21,19 @@ export default function MemoryVault() {
 
         <div className="masonry-container reveal reveal-delay-1">
           {portfolioImages.map((img, idx) => (
-            <div key={idx} className="masonry-item">
+            <TiltCard
+              key={idx}
+              className="masonry-item"
+              borderRadius="12px"
+              maxTilt={12}
+              scale={1.03}
+              glareOpacity={0.4}
+            >
               <img src={img.src} alt={img.title} loading="lazy" />
               <div className="masonry-caption">
                 <h3 className="heading-black text-2xl" style={{color: "var(--white)"}}>{img.title}</h3>
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Magnetic from "./Magnetic";
 
 const links = [
   { label: "About", href: "#about" },
@@ -24,9 +25,11 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {links.map(link => (
-              <a key={link.label} href={link.href} className="nav-link">
-                {link.label}
-              </a>
+              <Magnetic key={link.label} strength={0.3} proximity={75} maxOffset={12}>
+                <a href={link.href} className="nav-link">
+                  {link.label}
+                </a>
+              </Magnetic>
             ))}
           </div>
 
