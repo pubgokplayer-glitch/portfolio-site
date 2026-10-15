@@ -32,13 +32,16 @@ export default function ExplodedDumbbell() {
     renderer.toneMappingExposure = 1.15;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    // Critical for mobile: ensure canvas allows vertical page scrolling
+    renderer.domElement.style.touchAction = "pan-y";
     container.appendChild(renderer.domElement);
 
     // Studio Environment Map for Chrome & Matte Black
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
-    // OrbitControls for 360° mouse drag
+    // OrbitControls for 360° mouse drag on desktop
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.055;
@@ -46,6 +49,12 @@ export default function ExplodedDumbbell() {
     controls.enablePan = false;
     controls.maxPolarAngle = Math.PI * 0.85;
     controls.minPolarAngle = Math.PI * 0.15;
+
+    // On mobile touchscreens, disable OrbitControls' touch capture so vertical page scroll is 100% free
+    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isTouchDevice) {
+      controls.touches = { ONE: THREE.TOUCH.NONE, TWO: THREE.TOUCH.NONE };
+    }
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
@@ -375,6 +384,31 @@ export default function ExplodedDumbbell() {
     dumbbellGroup.rotation.y = -0.65;
     dumbbellGroup.rotation.x = 0.22;
 
+    // ── Responsive Scaling Function (Mobile vs Desktop) ───────────────────
+    function updateResponsiveDimensions() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isMobile = width < 768;
+
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+
+      // On mobile screens, scale the dumbbell so it fits cleanly with comfortable margins
+      if (isMobile) {
+        // Fits perfectly on screens from 320px to 768px
+        const mobileScale = Math.min(0.52, Math.max(0.42, width / 780));
+        dumbbellGroup.scale.set(mobileScale, mobileScale, mobileScale);
+        camera.position.set(0, 0.55, 9.8);
+      } else {
+        dumbbellGroup.scale.set(1, 1, 1);
+        camera.position.set(0, 1.35, 9.2);
+      }
+    }
+
+    // Call immediately to scale correctly on mount
+    updateResponsiveDimensions();
+
     // Mouse coordinates for dynamic studio reflection lights
     const mouse = new THREE.Vector2(0, 0);
     let hueTick = 0;
@@ -383,6 +417,41 @@ export default function ExplodedDumbbell() {
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    // ── Mobile Touch Support: Smooth Vertical Scroll + Horizontal Rotate ──
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isHorizontalSwipe = false;
+
+    const onTouchStart = (e) => {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isHorizontalSwipe = false;
+      }
+    };
+
+    const onTouchMove = (e) => {
+      if (e.touches.length === 1) {
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+
+        // If swipe has moved more horizontally than vertically, rotate dumbbell!
+        if (!isHorizontalSwipe && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+          isHorizontalSwipe = true;
+        }
+
+        if (isHorizontalSwipe) {
+          dumbbellGroup.rotation.y += dx * 0.008;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+        // If swiping vertically, do nothing: native browser scroll continues 100% unobstructed!
+      }
+    };
+
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove", onTouchMove, { passive: true });
 
     // ── Main Animation Loop ──────────────────────────────────────────────
     const startTime = performance.now();
@@ -410,18 +479,15 @@ export default function ExplodedDumbbell() {
 
     animate();
 
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", updateResponsiveDimensions);
 
     // ── Teardown on unmount ───────────────────────────────────────────────
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", updateResponsiveDimensions);
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
       controls.dispose();
       renderer.dispose();
       pmremGenerator.dispose();
@@ -455,6 +521,14 @@ export default function ExplodedDumbbell() {
           background: #ffffff;
         }
 
+        @media (max-width: 768px) {
+          #anatomy-3d-section {
+            height: 80vh;
+            min-height: 500px;
+            max-height: 680px;
+          }
+        }
+
         #anatomy-3d-section .bg-grid {
           position: absolute;
           inset: 0;
@@ -486,7 +560,7 @@ export default function ExplodedDumbbell() {
         #anatomy-3d-section .editorial-title {
           font-family: var(--font-heading), "Montserrat", sans-serif;
           font-weight: 900;
-          font-size: clamp(2rem, 4.5vw, 4.25rem);
+          font-size: clamp(1.85rem, 4.5vw, 4.25rem);
           line-height: 1.08;
           letter-spacing: -0.03em;
           text-transform: uppercase;
@@ -513,6 +587,7 @@ export default function ExplodedDumbbell() {
           height: 100%;
           z-index: 3;
           cursor: grab;
+          touch-action: pan-y;
         }
 
         #anatomy-3d-section #webgl-container:active {
@@ -521,9 +596,12 @@ export default function ExplodedDumbbell() {
 
         @media (max-width: 768px) {
           #anatomy-3d-section .anatomy-header {
-            left: 24px;
-            right: 24px;
-            top: 32px;
+            left: 20px;
+            right: 20px;
+            top: 28px;
+          }
+          #anatomy-3d-section .editorial-title {
+            font-size: clamp(1.6rem, 5.5vw, 2.4rem);
           }
         }
       `}</style>
